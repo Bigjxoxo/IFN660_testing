@@ -1,0 +1,79 @@
+
+// ==========================================================================
+//  GPLEX error listing for lex source file <scanner.lex>
+// ==========================================================================
+//  Version:  1.2.2
+//  Machine:  DESKTOP-I563R8E
+//  DateTime: 2/06/2017 6:00:01 PM
+//  UserName: Jane
+// ==========================================================================
+
+
+%namespace GPLexTutorial
+%{
+int lines = 0;
+%}
+
+digit [0-9]
+letter [a-zA-Z]
+
+%%
+
+if                           { return (int)Tokens.IF; }
+else                         { return (int)Tokens.ELSE; }
+int                          { return (int)Tokens.INT; }
+bool                         { return (int)Tokens.BOOL; }
+class						 { return (int)Tokens.CLASS; }
+public						 { return (int)Tokens.PUBLIC; }
+static						 { return (int)Tokens.STATIC; }		
+void						 { return (int)Tokens.VOID; }
+
+{letter}({letter}|{digit})* { yylval.name = yytext; return (int)Tokens.IDENT; }
+{digit}+	    { yylval.num = int.Parse(yytext); return (int)Tokens.NUMBER; }
+
+
+
+"="                          { return '='; }
+"+"                          { return '+'; }
+"<"                          { return '<'; }
+"("                          { return '('; }
+")"                          { return ')'; }
+"{"                          { return '{'; }
+"}"                          { return '}'; }
+";"                          { return ';'; }
+
+[\n]		{ lines++;    }
+[ \t\r]      /* ignore other whitespace */
+
+
+.                            { 
+                                 throw new Exception(
+                                     String.Format(
+                                         "unexpected character '{0}'", yytext)); 
+                             }
+
+public override void yyerror( string format, params object[] args )
+{
+// Error: Invalid production rule
+// Error: Invalid single-line action
+// Error: Parser error <Syntax error, unexpected {> 
+// -------------------------------------------------
+    System.Console.Error.WriteLine("Error: line {0}, {1}", lines,
+//-------------------------------------------------------^
+// Error: Expected character <')'> 
+// --------------------------------
+        String.Format(format, args));
+//--------------------------^-----^^^
+// Error: Expected character <')'> 
+// Error: Invalid production rule
+// Error: Invalid single-line action
+// Error: Invalid production rule
+// Error: Invalid production rule
+// ---------------------------------
+}
+// Error: Invalid production rule
+// ------------------------------
+
+%%
+// ==========================================================================
+
